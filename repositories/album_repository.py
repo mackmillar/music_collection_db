@@ -1,11 +1,12 @@
 from db.run_sql import run_sql
 from models.album import Album
 from models.artist import Artist
+import repositories.artist_repository as artist_repository
 
 
 def save(album):
-    sql = "INSERT INTO albums (title, genre) VALUES (%s, %s) RETURNING *"
-    values = [album.title, album.genre]
+    sql = "INSERT INTO albums (title, artist_id, genre) VALUES (%s, %s, %s) RETURNING *"
+    values = [album.title, album.artist.id, album.genre]
     results = run_sql(sql, values)
     id = results[0]['id']
     album.id = id
@@ -18,7 +19,8 @@ def select(id):
     result = run_sql(sql, values)[0]
     
     if result is not None:
-        album = Album(result['title'], result['genre'], result['id'])
+        artist = artist_repository.select(row['artist_id'])
+        album = Album(result['title'], artist, result['genre'], result['id'])
     return album
 
 def select_all():
@@ -28,7 +30,8 @@ def select_all():
     results = run_sql(sql)
 
     for row in results:
-        album = Album(row['title'], row['genre'], row['id'])
+        artist = artist_repository.select(row['artist_id'])
+        album = Album(row['title'], artist, row['genre'], row['id'])
         albums.append(album)
     return albums 
 
