@@ -18,6 +18,8 @@ artist_repository.save(artist_1)
 album_1 = Album("Nevermind", artist_1, "Grunge")
 album_repository.save(album_1)
 
+artist_repository.albums(artist_1)
+
 # album_repository.select(1)
 # artist_repository.select(1)
 # artist_repository.select_all()
